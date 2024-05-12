@@ -37,6 +37,7 @@ if st.button('start'):
         SELECT master_num
         FROM master_dt
         WHERE date = f"{date_str}"
+        ORDER BY date
         ''', conn)
     if not df.empty:
         str_sql = "UPDATE  master_dt SET master_num=" + f'{result}'+ "WHERE DATE=" + f"'{date_str}'"
