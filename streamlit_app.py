@@ -32,17 +32,27 @@ st.write('Average: ', ave)
 if st.button('start'):
     date_str = date.strftime('%Y-%m-%d')
     result = input_num
-    str_sql = "INSERT INTO master_dt (date, master_num) values(" + f"'{date_str}'" + ", " + f'{result}' + ")"
+    # 存在チェック
+    df = pd.read_sql_query(f'''
+        SELECT master_num
+        FROM master_dt
+        WHERE date = f"{date_str}"
+        ''', conn)
+    if not df.empty:
+        str_sql = "UPDATE  master_dt SET master_num=" + f'{result}'+ "WHERE DATE=" + f"'{date_str}'"
+    else:
+        str_sql = "INSERT INTO master_dt (date, master_num) values(" + f"'{date_str}'" + ", " + f'{result}' + ")"
     cur.execute(str_sql)
     
     # データベースへコミット。これで変更が反映される。
     conn.commit()
 
 # 統計データの表示
-df = pd.read_sql_query(f'''
+df = pd.read_sql(f'''
 SELECT date, master_num
 FROM master_dt
 ''', conn)
+
 
 if not df.empty:
     st.header('平均')
@@ -50,5 +60,6 @@ if not df.empty:
 avg_num = df['master_num'].mean()
 
 st.write(f'{avg_num:.1f}')
+st.dataframe(df)
 
 #conn.close()
