@@ -33,14 +33,13 @@ if st.button('start'):
     date_str = date.strftime('%Y-%m-%d')
     result = input_num
     # 存在チェック
-    df = pd.read_sql_query(f'''
+    df = pd.read_sql(f'''
         SELECT master_num
         FROM master_dt
-        WHERE date = f"{date_str}"
-        ORDER BY date DESC
+        WHERE date = "{date_str}"
         ''', conn)
     if not df.empty:
-        str_sql = "UPDATE  master_dt SET master_num=" + f'{result}'+ "WHERE DATE=" + f"'{date_str}'"
+        str_sql = "UPDATE  master_dt SET master_num=" + f'{result}'+ " WHERE DATE=" + f"'{date_str}'"
     else:
         str_sql = "INSERT INTO master_dt (date, master_num) values(" + f"'{date_str}'" + ", " + f'{result}' + ")"
     cur.execute(str_sql)
@@ -52,6 +51,7 @@ if st.button('start'):
 df = pd.read_sql(f'''
 SELECT date, master_num
 FROM master_dt
+ORDER BY date DESC
 ''', conn)
 
 
