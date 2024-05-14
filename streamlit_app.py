@@ -3,7 +3,10 @@ import datetime
 import sqlite3
 import pandas as pd 
 
+# データベース接続
 dbname = 'MASTER.db'
+conn = sqlite3.connect(dbname)
+cur = conn.cursor()
 
 selected_data = st.sidebar.selectbox('メニュー', ['Edit', 'Record'])
 
@@ -11,8 +14,6 @@ if selected_data == 'Edit':
     date = st.date_input('日付を入力してください。', datetime.date.today())
     input_num = st.number_input('回数を入力してください', value=0)
 
-    # 平均値の取得
-    conn = sqlite3.connect(dbname)
 
     # テーブルを作成する 
     conn.execute('''
@@ -24,8 +25,6 @@ if selected_data == 'Edit':
     ''')
 
     str_sql = 'SELECT avg(master_num) FROM master_dt'
-    # sqliteを操作するカーソルオブジェクトを作成
-    cur = conn.cursor()
     cur.execute(str_sql)
     ret = cur.fetchall()
     ave = ret[0]
