@@ -1,11 +1,18 @@
 import streamlit as st
 import datetime
 import sqlite3
-import pandas as pd 
+import pandas as pd
+import os
 
 # データベース接続
-dbname = 'MASTER.db'
-conn = sqlite3.connect(dbname)
+# 環境変数からデータベースのパスを取得
+db_path = os.getenv("DATABASE_URL")
+dbname = r'C:\Users\ryohm\work\11_python\git\streamlit\db\MASTER.db'
+# データベースに接続
+if db_path:
+    conn = sqlite3.connect(db_path)
+else:
+    conn = sqlite3.connect(dbname)
 cur = conn.cursor()
 
 selected_data = st.sidebar.selectbox('メニュー', ['Edit', 'Record'])
