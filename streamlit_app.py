@@ -8,6 +8,7 @@ import os
 # 環境変数からデータベースのパスを取得
 db_path = os.environ.get("DATABASE_URL")
 dbname = r'C:\Users\ryohm\work\11_python\git\streamlit\db\MASTER.db'
+st.write(db_path)
 # データベースに接続
 if db_path:
     conn = sqlite3.connect(db_path)
