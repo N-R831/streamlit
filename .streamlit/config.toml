@@ -1,1 +1,2 @@
 [server]
+ignoreFile = "db/MASTER.db"
