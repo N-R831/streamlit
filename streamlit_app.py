@@ -47,12 +47,12 @@ if selected_data == 'Edit':
             WHERE date = "{date_str}"
             ''', conn)
         if not df.empty:
-            str_sql2 = "DELETE FROM master_dt WHERE DATE='2024-05-12'" 
+            #str_sql2 = "DELETE FROM master_dt WHERE DATE='2024-05-12'" 
             str_sql = "UPDATE  master_dt SET master_num=" + f'{result}'+ " WHERE DATE=" + f"'{date_str}'"
         else:
             str_sql = "INSERT INTO master_dt (date, master_num) values(" + f"'{date_str}'" + ", " + f'{result}' + ")"
         cur.execute(str_sql)
-        cur.execute(str_sql2)
+        #cur.execute(str_sql2)
         
         # データベースへコミット。これで変更が反映される。
         conn.commit()
