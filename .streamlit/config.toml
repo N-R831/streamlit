@@ -1,2 +1,2 @@
 [server]
-ignoreFile = "db/MASTER.db"
+folderWatchBlacklist = ["db/MASTER.db"]
