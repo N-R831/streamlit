@@ -6,7 +6,8 @@ import os
 
 # データベース(GoogleSpreadSheet)に接続
 conn = st.connection("gsheets", type=GSheetsConnection)
-df = conn.read()
+df = conn.query('SELECT date, master_num FROM "master" WHERE date is NOT NULL ORDER BY date DESC')
+print(df)
 
 selected_data = st.sidebar.selectbox('メニュー', ['Edit', 'Record'])
 
@@ -14,36 +15,31 @@ if selected_data == 'Edit':
     date = st.date_input('日付を入力してください。', datetime.date.today())
     input_num = st.number_input('回数を入力してください', value=0)
 
-
-    # テーブルを作成する 
-    # conn.execute('''
-    # CREATE TABLE IF NOT EXISTS master_dt ( 
-    #     id INTEGER PRIMARY KEY AUTOINCREMENT, 
-    #     date TEXT NOT NULL,
-    #     master_num INTEGER NOT NULL
-    # ) 
-    # ''')
-
-    # str_sql = 'SELECT avg(master_num) FROM master_dt'
-    # cur.execute(str_sql)
-    # ret = cur.fetchall()
-    # ave = ret[0]
-
     if st.button('submit'):
         date_str = date.strftime('%Y-%m-%d')
         result = input_num
         # 存在チェック
-        # df = conn.read(
-        #         worksheet="master",
-        # )
-        # if not df.empty:
-        #     str_sql = "UPDATE  master_dt SET master_num=" + f'{result}'+ " WHERE DATE=" + f"'{date_str}'"
-        # else:
-        #     str_sql = "INSERT INTO master_dt (date, master_num) values(" + f"'{date_str}'" + ", " + f'{result}' + ")"
-        # cur.execute(str_sql)
-        
-        # データベースへコミット。これで変更が反映される。
-        # conn.commit()
+        str_query = f"SELECT date, master_num FROM master WHERE date = '{date_str}'"
+        df_check = conn.query(str_query)
+        print(df_check)
+        if df_check.empty:
+            df_append = pd.DataFrame({'date': [date_str], 'master_num': [result]})
+            df_update = pd.concat([df, df_append])
+            print(df_update)
+            df = conn.update(
+                data=df_update,
+            )
+            st.cache_data.clear()
+            st.rerun()
+            print('追加')
+        else:
+            df.loc[df['date']==date_str] = result
+            df = conn.update(
+                data=df,
+            )
+            st.cache_data.clear()
+            st.rerun()
+            print('更新')
 elif selected_data == 'Record':
     # 統計データの表示
     # df = pd.read_sql(f'''
@@ -55,9 +51,8 @@ elif selected_data == 'Record':
 
     if not df.empty:
         st.header('平均')
-        # avg_num = df['master_num'].mean()
-
-        # st.write(f'{avg_num:.3f}')
+        avg_num = df['master_num'].mean()
+        st.write(f'{avg_num:.3f}')
         st.dataframe(df)
 
 #conn.close()
