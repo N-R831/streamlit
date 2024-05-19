@@ -5,7 +5,7 @@ import pandas as pd
 import os
 
 # データベース(GoogleSpreadSheet)に接続
-conn = st.connection("gsheets", type=GSheetsConnection)
+conn = st.experimental_connection("gsheets", type=GSheetsConnection)
 df = conn.query('SELECT date, master_num FROM "master" WHERE date is NOT NULL ORDER BY date DESC')
 print(df)
 
