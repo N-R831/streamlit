@@ -33,7 +33,7 @@ if selected_data == 'Edit':
             st.rerun()
             print('追加')
         else:
-            df.loc[df['date']==date_str] = result
+            df.loc[df['date']==date_str, 'master_num'] =  result
             df = conn.update(
                 data=df,
             )
