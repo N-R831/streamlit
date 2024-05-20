@@ -46,6 +46,9 @@ if selected_data == 'master':
 elif selected_data == 'money':
     df = conn.query('SELECT date, inout, kind, amount, memo FROM "money" WHERE date is NOT NULL ORDER BY date DESC')
 
+    date = st.date_input('日付を入力してください。', datetime.date.today())
+    inout = st.selectbox(['in', 'out'])
+    
     if not df.empty:
         st.dataframe(df)
 
