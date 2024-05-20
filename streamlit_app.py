@@ -5,13 +5,11 @@ import pandas as pd
 import os
 
 # データベース(GoogleSpreadSheet)に接続
+
+selected_data = st.sidebar.selectbox('メニュー', ['master', 'money'])
 conn = st.experimental_connection("gsheets", type=GSheetsConnection)
-df = conn.query('SELECT date, master_num FROM "master" WHERE date is NOT NULL ORDER BY date DESC')
-print(df)
-
-selected_data = st.sidebar.selectbox('メニュー', ['Edit', 'Record'])
-
-if selected_data == 'Edit':
+if selected_data == 'master':
+    df = conn.query('SELECT date, master_num FROM "master" WHERE date is NOT NULL ORDER BY date DESC')
     date = st.date_input('日付を入力してください。', datetime.date.today())
     input_num = st.number_input('回数を入力してください', value=0)
 
@@ -40,19 +38,15 @@ if selected_data == 'Edit':
             st.cache_data.clear()
             st.rerun()
             print('更新')
-elif selected_data == 'Record':
-    # 統計データの表示
-    # df = pd.read_sql(f'''
-    # SELECT date, master_num
-    # FROM master_dt
-    # ORDER BY date DESC
-    # ''', conn)
-
-
     if not df.empty:
         st.header('平均')
         avg_num = df['master_num'].mean()
         st.write(f'{avg_num:.3f}')
+        st.dataframe(df)
+elif selected_data == 'money':
+    df = conn.query('SELECT date, inout, kind, amount, memo FROM "money" WHERE date is NOT NULL ORDER BY date DESC')
+
+    if not df.empty:
         st.dataframe(df)
 
 #conn.close()
