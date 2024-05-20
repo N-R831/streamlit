@@ -50,6 +50,7 @@ elif selected_data == 'money':
     inout = st.selectbox("収入/支出(in/out)", options=["in","out"])
     if inout == "in":
         df_kind = conn.query('SELECT kind_in FROM "kind" WHERE kind_in is NOT NULL ')
+        print(df_kind.values.tolist)
         select = st.selectbox("分類", options=df_kind.values.tolist)
     else:
         df_kind = conn.query('SELECT kind_out FROM "kind" WHERE kind_out is NOT NULL ')
