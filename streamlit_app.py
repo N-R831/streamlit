@@ -47,7 +47,13 @@ elif selected_data == 'money':
     df = conn.query('SELECT date, inout, kind, amount, memo FROM "money" WHERE date is NOT NULL ORDER BY date DESC')
 
     date = st.date_input('日付を入力してください。', datetime.date.today())
-    inout = st.selectbox(['in', 'out'])
+    inout = st.selectbox("収入/支出(in/out)", options=["in","out"])
+    if inout == "in":
+        df_kind = conn.query('SELECT kind_in FROM "money" WHERE kind_in is NOT NULL ')
+        select = st.selectbox("分類", options=df_kind.values.tolist)
+    else:
+        df_kind = conn.query('SELECT kind_out FROM "money" WHERE kind_out is NOT NULL ')
+        select = st.selectbox("分類", options=df_kind.values.tolist)
     
     if not df.empty:
         st.dataframe(df)
