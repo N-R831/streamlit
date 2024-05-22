@@ -9,7 +9,7 @@ def app_money():
     # データベース(GoogleSpreadSheet)に接続
     conn = st.connection("gsheets", type=GSheetsConnection)
     df = conn.query('SELECT date, inout, kind, amount, memo FROM "money" WHERE date is NOT NULL ORDER BY date DESC')
-    tab_home, tab_input, tab_data, tab_hist = st.tabs(["HOME", "入力", "データ", "履歴"] )
+    tab_home, tab_input, tab_data, tab_hist, tab_conf = st.tabs(["HOME", "入力", "データ", "履歴", "設定"] )
     with tab_home:
         st.title("HOME")
         df_in = conn.query('SELECT SUM(amount) FROM "money" WHERE inout = \'in\'')
@@ -48,3 +48,14 @@ def app_money():
     with tab_hist:
         if not df.empty:
             st.dataframe(df)
+    with tab_conf:
+        df_conf = conn.query('SELECT salary_day FROM "config" WHERE salary_day is NOT NULL')
+        salary_day = df_conf['salary_day'][0]
+        salary_day = st.number_input("給料日", min_value=1, max_value=28, value=salary_day,step=1)
+        if st.button('save'):
+            if (salary_day != None):
+                df_conf['salary_day'][0] = salary_day
+                df = conn.update(
+                    worksheet="config",
+                    data=df_conf,
+                )

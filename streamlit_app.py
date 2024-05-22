@@ -7,7 +7,7 @@ from app import app_money as am
 
 # データベース(GoogleSpreadSheet)に接続
 
-selected_data = st.sidebar.selectbox('メニュー', ['master', 'money'])
+selected_data = st.sidebar.selectbox('メニュー', ['money', 'master'])
 if selected_data == 'master':
     ap.app_master()
 elif selected_data == 'money':
