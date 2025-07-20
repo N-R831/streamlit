@@ -10,6 +10,7 @@ from app import app_money as am
 selected_data = st.sidebar.selectbox('メニュー', ['money', 'master'])
 if selected_data == 'master':
     ap.app_master()
+    print("doing!")
 elif selected_data == 'money':
     am.app_money()
 
